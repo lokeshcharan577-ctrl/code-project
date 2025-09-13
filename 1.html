@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gig4Students</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f8fc;
+    }
+    header {
+      background: #0077b6;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      padding: 20px;
+    }
+    .form-box, .gigs-box, .profile-box, .wallet-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      margin-bottom: 20px;
+    }
+    input, textarea, button, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0077b6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background: #023e8a;
+    }
+    .gig {
+      background: #eaf6ff;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .highlight {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎓 Gig4Students – Study & Earn</h1>
+    <p>Find part-time work while studying</p>
+  </header>
+  
+  <div class="container">
+    <!-- Student Profile -->
+    <div class="profile-box">
+      <h2>👨‍🎓 Student Profile</h2>
+      <input type="text" id="studentName" placeholder="Enter Your Name">
+      <input type="text" id="studentSkills" placeholder="Your Skills (e.g., Python, Writing, Design)">
+      <select id="studentYear">
+        <option value="">Select Year of Study</option>
+        <option>1st Year</option>
+        <option>2nd Year</option>
+        <option>3rd Year</option>
+        <option>4th Year</option>
+      </select>
+      <button onclick="saveProfile()">Save Profile</button>
+      <p id="profileInfo" class="highlight"></p>
+    </div>
+
+    <!-- Student Wallet -->
+    <div class="wallet-box">
+      <h2>💰 My Wallet</h2>
+      <p><b>Balance:</b> ₹<span id="walletBalance">0</span></p>
+    </div>
+
+    <!-- Post a Gig Form -->
+    <div class="form-box">
+      <h2>💼 Post a Gig (Freelance Task)</h2>
+      <input type="text" id="title" placeholder="Gig Title (e.g., Logo Design)">
+      <textarea id="desc" placeholder="Gig Description"></textarea>
+      <input type="number" id="price" placeholder="Price (₹)">
+      <button onclick="postGig()">Post Gig</button>
+    </div>
+
+    <!-- Display Gigs -->
+    <div class="gigs-box">
+      <h2>📋 Available Gigs</h2>
+      <div id="gigList"></div>
+    </div>
+  </div>
+
+  <script>
+    // Preloaded gigs
+    let gigs = [
+      {title: "Python Assignment Helper", desc: "I will debug or write Python code for small student projects. Delivery in 2 days.", price: 500},
+      {title: "Logo Design for College Clubs", desc: "Creative logos for college fests, clubs, and societies.", price: 300},
+      {title: "Math Tutoring (B.Tech 1st Year)", desc: "Help with Calculus and Linear Algebra, ₹200/hr online.", price: 200}
+    ];
+
+    let studentProfile = null;
+    let walletBalance = 0;
+
+    function saveProfile() {
+      let name = document.getElementById("studentName").value;
+      let skills = document.getElementById("studentSkills").value;
+      let year = document.getElementById("studentYear").value;
+
+      if (name && skills && year) {
+        studentProfile = {name, skills, year};
+        document.getElementById("profileInfo").innerText = 
+          ✅ Profile Saved: ${name} | Skills: ${skills} | Year: ${year};
+      } else {
+        alert("Please fill all profile fields!");
+      }
+    }
+
+    function postGig() {
+      let title = document.getElementById("title").value;
+      let desc = document.getElementById("desc").value;
+      let price = document.getElementById("price").value;
+
+      if(title && desc && price) {
+        let gig = {title, desc, price};
+        gigs.push(gig);
+        displayGigs();
+        document.getElementById("title").value = "";
+        document.getElementById("desc").value = "";
+        document.getElementById("price").value = "";
+      } else {
+        alert("Please fill all fields!");
+      }
+    }
+
+    function displayGigs() {
+      let gigList = document.getElementById("gigList");
+      gigList.innerHTML = "";
+      gigs.forEach((g, index) => {
+        gigList.innerHTML += `
+          <div class="gig">
+            <h3>${g.title}</h3>
+            <p>${g.desc}</p>
+            <p><b>💰 Price:</b> ₹${g.price}</p>
+            <button onclick="applyGig(${index})">Apply</button>
+          </div>
+        `;
+      });
+    }
+
+    function applyGig(index) {
+      if (!studentProfile) {
+        alert("⚠ Please create your Student Profile before applying.");
+        return;
+      }
+      walletBalance += parseInt(gigs[index].price);
+      document.getElementById("walletBalance").innerText = walletBalance;
+
+      alert(✅ ${studentProfile.name} (Skills: ${studentProfile.skills}, Year: ${studentProfile.year}) applied for: ${gigs[index].title} | Earned ₹${gigs[index].price});
+    }
+
+    // Show gigs on page load
+    displayGigs();
+  </script>
+</body>
+</html>
